@@ -326,6 +326,40 @@ function showJobDetail(no){
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-renderOrgChart();
-renderWorkforce();
-initRecruit();
+// ===== 데이터 로딩 (구글 시트 우선, 없으면 내장 data.js) =====
+async function loadAllData(){
+  if(typeof USE_GOOGLE_SHEETS!=='undefined' && USE_GOOGLE_SHEETS){
+    // 인력 명단 시트 → HRSTAT 재계산
+    const peopleRows=await fetchSheet(SHEET_URLS.people);
+    if(peopleRows && peopleRows.length>1){
+      try{ window.HRSTAT=computeHrStatFromRows(peopleRows); console.log('구글시트 인력 데이터 로드 성공'); }
+      catch(e){ console.warn('시트 파싱 실패, 내장 데이터 사용',e); }
+    }
+    // 채용 시트 등 추가 로드 가능 (동일 패턴)
+  }
+  // 렌더링
+  renderOrgChart();
+  renderWorkforce();
+  initRecruit();
+}
+
+// 시트 행 → 인력 통계 (헤더: 이름,성별,나이,고용형태,그룹,isRnD ... 유연 매핑)
+function computeHrStatFromRows(rows){
+  const hdr=rows[0].map(h=>h.trim());
+  const idx=name=>hdr.findIndex(h=>h.includes(name));
+  const iGender=idx('성별'),iAge=idx('나이'),iEmp=idx('고용'),iGroup=idx('그룹'),iRnd=idx('R&D');
+  const data=rows.slice(1).filter(r=>r.some(c=>c&&c.trim()));
+  const cnt=(fn)=>{ const o={}; data.forEach(r=>{const k=fn(r); if(k)o[k]=(o[k]||0)+1;}); return o; };
+  const ageband=a=>{ a=parseInt(a); if(!a)return '미상'; if(a<30)return '20대'; if(a<40)return '30대'; if(a<50)return '40대'; return '50대+'; };
+  return {
+    total:data.length,
+    gender:cnt(r=>iGender>=0?r[iGender]:''),
+    ageband:cnt(r=>iAge>=0?ageband(r[iAge]):''),
+    emptype:cnt(r=>iEmp>=0?r[iEmp]:'정규직'),
+    rnd:cnt(r=>iRnd>=0?(r[iRnd]==='Y'||r[iRnd]==='R&D'?'R&D':'비R&D'):'비R&D'),
+    groupcount:cnt(r=>iGroup>=0?r[iGroup]:''),
+    recruiting:(window.HRSTAT&&window.HRSTAT.recruiting)||[]
+  };
+}
+
+loadAllData();

@@ -36,7 +36,8 @@ button{font-family:inherit;cursor:pointer}
 .mvc-vision strong{color:var(--navy)}
 
 .mvc-values{max-width:1200px;margin:52px auto 0;padding:0 28px}
-.sec-title{font-size:20px;font-weight:800;margin-bottom:20px;text-align:left}
+.sec-title{font-size:20px;font-weight:800;margin-bottom:20px;text-align:left;
+  padding-left:14px;border-left:5px solid var(--navy);line-height:1.2}
 .sec-title small{font-weight:500;color:var(--mid);font-size:13px;margin-left:8px}
 .cv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .cv-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;transition:transform .15s,box-shadow .15s}
