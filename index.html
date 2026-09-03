@@ -16,7 +16,7 @@
   <nav class="mainnav">
     <button class="navtab active" data-tab="home">홈 · MVC</button>
     <button class="navtab" data-tab="eval">평가 · 보상</button>
-    <button class="navtab" data-tab="recruit">채용 현황</button>
+    <button class="navtab" data-tab="recruit">인력 현황</button>
   </nav>
   <div class="brand-sub">인사총무팀</div>
 </header>
@@ -67,18 +67,29 @@
 <!-- ===== 채용 현황 ===== -->
 <main id="tab-recruit" class="tab-panel">
   <div class="recruit-wrap">
+    <!-- 인력 현황 -->
+    <div class="rec-head"><h2>인력 현황</h2><span class="rec-date">2026-09-03 기준 · 재직 70명</span></div>
+    <div class="workforce-kpi" id="workforceKpi"></div>
+    <div class="workforce-charts" id="workforceCharts"></div>
+
+    <!-- 조직별 인원 면적 그래프 -->
+    <section class="rec-card">
+      <div class="rec-card-head"><h3>조직별 인원 분포</h3><span class="rec-note">면적=인원수 · <span style="color:#B4690E">■</span> 채용중 · <span style="color:#6B7280">■</span> 충원 완료</span></div>
+      <div id="orgTreemap"></div>
+    </section>
+
+    <!-- 채용현황 대시보드 -->
+    <div class="rec-head" style="margin-top:32px"><h2>채용 현황 대시보드</h2><span class="rec-date" id="recDate"></span></div>
     <div class="rec-head">
       <h2>채용 현황 대시보드</h2>
       <span class="rec-date" id="recDate"></span>
     </div>
+    <div class="kpi-row" id="kpiRow"></div>
     <div class="job-detail-bar">
       <label>직무 상세 보기</label>
       <select id="jobDetailSel"><option value="">직무를 선택하면 현황이 펼쳐집니다</option></select>
     </div>
     <div class="job-detail-panel" id="jobDetailPanel" style="display:none"></div>
-
-    <!-- KPI 카드 -->
-    <div class="kpi-row" id="kpiRow"></div>
 
     <div class="rec-grid">
       <!-- 사분면 -->
@@ -100,11 +111,6 @@
       </section>
     </div>
 
-    <!-- 전형 퍼널 -->
-    <section class="rec-card">
-      <div class="rec-card-head"><h3>전형 단계별 현황</h3><span class="rec-note">진행중 공고</span></div>
-      <div id="funnelChart"></div>
-    </section>
 
     <!-- 채용 목록 -->
     <section class="rec-card">

@@ -161,3 +161,50 @@ button{font-family:inherit;cursor:pointer}
 @media(max-width:900px){
   .jd-kpis{grid-template-columns:repeat(3,1fr)}
 }
+
+/* ===== 인력 현황 ===== */
+.workforce-kpi{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:16px}
+.workforce-charts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.wf-chart{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.wf-chart h4{font-size:13px;font-weight:700;margin-bottom:12px;text-align:center}
+.wf-donut{display:flex;flex-direction:column;align-items:center;gap:12px}
+.wf-donut svg{width:100px;height:100px}
+.wf-legend{width:100%;display:flex;flex-direction:column;gap:5px}
+.wl-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.wl-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.wl-item b{font-weight:700;margin-left:auto}
+.wl-item em{font-style:normal;color:var(--mid);font-size:11px;min-width:32px;text-align:right}
+
+/* 조직 면적 그래프 (treemap) */
+.treemap{display:flex;gap:6px;height:150px}
+.tm-cell{position:relative;border-radius:8px;padding:14px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;min-width:60px;overflow:hidden;transition:transform .15s}
+.tm-cell:hover{transform:scale(1.02)}
+.tm-name{font-size:14px;font-weight:800;line-height:1.2}
+.tm-count{font-size:20px;font-weight:900;margin-top:2px}
+.tm-badge{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.25);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+
+/* 퍼널 테이블 */
+.jd-funnel-table{width:100%;border-collapse:collapse;font-size:13px}
+.jd-funnel-table th{background:var(--panel2);color:var(--ink2);font-weight:600;padding:8px 12px;text-align:left;font-size:12px}
+.jd-funnel-table td{padding:8px 12px;border-bottom:1px solid var(--line)}
+.jf-label{font-weight:600}
+.jf-cnt{font-weight:800;font-size:15px}
+.jf-rate{color:var(--navy);font-weight:600}
+.jf-cum{color:var(--mid)}
+.jf-barcell{width:40%}
+.jf-bar{height:16px;background:linear-gradient(90deg,#1E3A5F,#4A6485);border-radius:4px;min-width:2px}
+.jd-bottleneck{margin-top:14px;padding:12px 16px;background:#FBEAE8;border-radius:8px;font-size:13px;color:var(--red)}
+.jd-bottleneck strong{font-weight:800}
+
+/* 일평균 지원 색상 */
+.perday-bad{color:var(--red);font-weight:800}
+.perday-warn{color:var(--amber);font-weight:700}
+.perday-ok{color:var(--green);font-weight:600}
+.perday-bad small,.perday-warn small,.perday-ok small{font-weight:400;color:var(--lt)}
+
+@media(max-width:900px){
+  .workforce-kpi{grid-template-columns:repeat(3,1fr)}
+  .workforce-charts{grid-template-columns:repeat(2,1fr)}
+  .treemap{flex-wrap:wrap;height:auto}
+  .tm-cell{min-height:100px;flex-basis:calc(50% - 3px)}
+}

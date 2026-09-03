@@ -91,6 +91,69 @@ function showOrgMembers(path){
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+// ===== 인력 현황 =====
+function renderWorkforce(){
+  const H=HRSTAT;
+  // KPI
+  const kpis=[
+    ['총원',H.total,'명'],
+    ['R&D',H.rnd['R&D']||0,'명'],
+    ['비R&D',H.rnd['비R&D']||0,'명'],
+    ['정규직',H.emptype['정규직']||0,'명'],
+    ['계약직',H.emptype['계약직']||0,'명'],
+    ['인턴',H.emptype['인턴']||0,'명']
+  ];
+  $('#workforceKpi').innerHTML=kpis.map(([l,v,u])=>`
+    <div class="kpi-card"><div class="kpi-val">${v}<small>${u}</small></div><div class="kpi-label">${l}</div></div>`).join('');
+  // 분포 차트 (성별/연령/고용형태 도넛+막대)
+  const donut=(title,data,colors)=>{
+    const total=Object.values(data).reduce((a,b)=>a+b,0);
+    let acc=0; const segs=Object.entries(data).map(([k,v],i)=>{
+      const pct=v/total*100; const s=acc; acc+=pct;
+      return {k,v,pct,start:s,color:colors[i%colors.length]};
+    });
+    const R=52,C=64,sw=20;
+    let circles=segs.map(s=>{
+      const dash=`${s.pct/100*2*Math.PI*R} ${2*Math.PI*R}`;
+      const rot=s.start/100*360-90;
+      return `<circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="${s.color}" stroke-width="${sw}" stroke-dasharray="${dash}" transform="rotate(${rot} ${C} ${C})"/>`;
+    }).join('');
+    const legend=segs.map(s=>`<div class="wl-item"><span class="wl-dot" style="background:${s.color}"></span>${s.k} <b>${s.v}</b><em>${s.pct.toFixed(0)}%</em></div>`).join('');
+    return `<div class="wf-chart"><h4>${title}</h4><div class="wf-donut"><svg viewBox="0 0 ${C*2} ${C*2}">${circles}<text x="${C}" y="${C+5}" text-anchor="middle" font-size="20" font-weight="800">${total}</text></svg><div class="wf-legend">${legend}</div></div></div>`;
+  };
+  $('#workforceCharts').innerHTML=
+    donut('성별',H.gender,['#2E5C8A','#B4690E'])+
+    donut('연령대',H.ageband,['#1E3A5F','#2E5C8A','#6B8CAE','#B0C4D8'])+
+    donut('고용형태',H.emptype,['#1E6B4F','#B4690E','#9CA3AF'])+
+    donut('R&D 구분',H.rnd,['#1E6B4F','#6B7280']);
+  renderOrgTreemap();
+}
+
+// 조직별 인원 면적 그래프 (treemap 스타일)
+function renderOrgTreemap(){
+  const H=HRSTAT;
+  const GC=GROUP_COLOR;
+  // 기타 제외, 인원순 정렬
+  const entries=Object.entries(H.groupcount).filter(([k])=>k!=='기타').sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((s,[,v])=>s+v,0);
+  const recruiting=new Set(H.recruiting);
+  // 간단한 행 기반 treemap (면적 = flex-grow)
+  let html='<div class="treemap">';
+  entries.forEach(([g,cnt])=>{
+    const isRec=recruiting.has(g);
+    const baseCol=GC[g]||'#6B7280';
+    const bg=isRec?baseCol:'#8A9099';
+    // 면적을 인원수 비례로 (flex-grow), 최소 높이 확보
+    html+=`<div class="tm-cell" style="flex-grow:${cnt};background:${bg}" title="${g} ${cnt}명">
+      <div class="tm-name">${g.replace('그룹','')}</div>
+      <div class="tm-count">${cnt}명</div>
+      ${isRec?'<div class="tm-badge">채용중</div>':''}
+    </div>`;
+  });
+  html+='</div>';
+  $('#orgTreemap').innerHTML=html;
+}
+
 // ===== 채용 대시보드 =====
 function initRecruit(){
   const R=RECRUIT;
@@ -111,7 +174,6 @@ function initRecruit(){
     <div class="kpi-label">${l}</div></div>`).join('');
   renderQuadrant(R.quad);
   renderTrend(R.trend);
-  renderFunnel(R.funnel.filter(f=>f.total>0));
   renderRecTable(R.reqs);
   initJobDetail();
 }
@@ -195,13 +257,19 @@ function renderRecTable(reqs){
   $('#recFilter').innerHTML=filters.map(([k,l])=>`<button class="${k===recFilterState?'active':''}" data-f="${k}">${l}</button>`).join('');
   $$('#recFilter button').forEach(b=>b.onclick=()=>{ recFilterState=b.dataset.f; renderRecTable(reqs); });
   let list=recFilterState==='all'?reqs:reqs.filter(r=>r.status===recFilterState);
-  $('#recTable').innerHTML=`<thead><tr><th>#</th><th>그룹</th><th>팀</th><th>직무</th><th>요청일</th><th>상태</th><th>소요일</th><th>진단</th></tr></thead><tbody>${
+  // 일평균 지원자 오름차순 (작을수록 위 = 현황 나쁜 채용 상단)
+  list=[...list].sort((a,b)=>(a.perday??999)-(b.perday??999));
+  $('#recTable').innerHTML=`<thead><tr><th>그룹</th><th>팀</th><th>직무</th><th>요청일</th><th>상태</th><th>소요일</th><th>일평균 지원</th><th>진단</th></tr></thead><tbody>${
     list.map(r=>{
       const sb={'진행중':'badge-active','완료':'badge-done','취소':'badge-cancel'}[r.status]||'';
       const db=r.diagnosis==='기간초과'?'badge-over':'badge-normal';
-      return `<tr><td>${r.no}</td><td>${r.group}</td><td>${r.team}</td><td>${r.job}</td>
+      // 일평균 낮으면 경고색
+      const pd=r.perday??0;
+      const pdClass=pd<0.3?'perday-bad':(pd<1?'perday-warn':'perday-ok');
+      return `<tr><td>${r.group}</td><td>${r.team}</td><td>${r.job}</td>
         <td>${r.reqDate||'-'}</td><td><span class="badge ${sb}">${r.status}</span></td>
-        <td>${r.days||'-'}</td><td>${r.diagnosis?`<span class="badge ${db}">${r.diagnosis}</span>`:'-'}</td></tr>`;
+        <td>${r.days||'-'}</td><td class="${pdClass}">${pd.toFixed(2)}<small>/일</small></td>
+        <td>${r.diagnosis?`<span class="badge ${db}">${r.diagnosis}</span>`:'-'}</td></tr>`;
     }).join('')}</tbody>`;
 }
 
@@ -214,32 +282,50 @@ function initJobDetail(){
 function showJobDetail(no){
   const req=RECRUIT.reqs.find(r=>r.no===no);
   const fun=RECRUIT.funnel.find(f=>f.no===no);
-  const qd=RECRUIT.quad.find(q=>q.no===no);
   const panel=$('#jobDetailPanel'); panel.style.display='block';
   const sb={'진행중':'badge-active','완료':'badge-done','취소':'badge-cancel'}[req.status]||'';
-  // 퍼널 미니
-  const stages=[['총지원',fun?.total,'#CBD0D6'],['서류',fun?.서류,'#1E3A5F'],['1차',fun?.['1차'],'#2E5C8A'],['2차',fun?.['2차'],'#4A6485'],['처우',fun?.처우,'#8C6A3F'],['입사',fun?.입사,'#1E6B4F']];
+  // 전형 단계 (지원자→서류→1차→2차→처우→입사) + 통과율
+  const stages=[['지원자',fun?.total||0],['서류전형',fun?.서류||0],['1차면접',fun?.['1차']||0],['2차면접',fun?.['2차']||0],['처우협의',fun?.처우||0],['입사확정',fun?.입사||0]];
+  const total=stages[0][1]||1;
+  let minRate=1, bottleneck='';
+  const stageRows=stages.map((s,i)=>{
+    const prev=i>0?stages[i-1][1]:s[1];
+    const rate=i===0?1:(prev>0?s[1]/prev:0);
+    const cumRate=s[1]/total;
+    if(i>0 && rate<minRate){ minRate=rate; bottleneck=`${stages[i-1][0]} → ${s[0]}`; }
+    const barW=cumRate*100;
+    return {label:s[0],cnt:s[1],rate:i===0?null:rate,cumRate,barW};
+  });
   panel.innerHTML=`
     <div class="jd-head">
-      <div><h3>${req.job}</h3><span class="jd-org">${req.group} · ${req.team}</span></div>
+      <div><h3>${req.job}</h3><span class="jd-org">${req.group} · ${req.team} · 요청자 ${req.requester||'-'}</span></div>
       <span class="badge ${sb}">${req.status}</span>
     </div>
     <div class="jd-kpis">
       <div class="jd-kpi"><div class="v">${req.days||'-'}</div><div class="l">소요일</div></div>
       <div class="jd-kpi"><div class="v">${fun?.total||0}</div><div class="l">총 지원자</div></div>
+      <div class="jd-kpi"><div class="v">${(req.perday??0).toFixed(2)}</div><div class="l">일평균 지원</div></div>
       <div class="jd-kpi"><div class="v">${req.diagnosis||'-'}</div><div class="l">진단</div></div>
-      <div class="jd-kpi"><div class="v">${req.requester||'-'}</div><div class="l">요청자</div></div>
       <div class="jd-kpi"><div class="v">${req.reqDate||'-'}</div><div class="l">요청일</div></div>
       <div class="jd-kpi"><div class="v">${req.joinDate||'미정'}</div><div class="l">입사확정</div></div>
     </div>
     <div class="jd-funnel">
-      <h4>전형 진행</h4>
-      <div class="jd-funnel-bars">
-        ${stages.map(([l,v,c])=>`<div class="jd-fseg"><div class="jd-fbar" style="background:${c};height:${Math.max(8,(v||0)/(fun?.total||1)*80)}px"></div><div class="jd-fval">${v||0}</div><div class="jd-flabel">${l}</div></div>`).join('')}
-      </div>
+      <h4>전형 퍼널 &amp; 병목 분석</h4>
+      <table class="jd-funnel-table">
+        <thead><tr><th>전형단계</th><th>인원</th><th>통과율(직전대비)</th><th>누적통과율</th><th></th></tr></thead>
+        <tbody>${stageRows.map(s=>`
+          <tr><td class="jf-label">${s.label}</td>
+            <td class="jf-cnt">${s.cnt}</td>
+            <td class="jf-rate">${s.rate===null?'—':(s.rate*100).toFixed(0)+'%'}</td>
+            <td class="jf-cum">${(s.cumRate*100).toFixed(0)}%</td>
+            <td class="jf-barcell"><div class="jf-bar" style="width:${s.barW}%"></div></td>
+          </tr>`).join('')}</tbody>
+      </table>
+      ${bottleneck?`<div class="jd-bottleneck">🔍 병목 구간: <strong>${bottleneck}</strong> (통과율 ${(minRate*100).toFixed(0)}%) — 해당 단계 개선 필요</div>`:''}
     </div>`;
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 renderOrgChart();
+renderWorkforce();
 initRecruit();
