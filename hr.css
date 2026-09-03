@@ -29,14 +29,14 @@ button{font-family:inherit;cursor:pointer}
 .hero-mission{font-size:32px;font-weight:800;line-height:1.42;letter-spacing:-.01em}
 .hero-en{margin-top:20px;font-size:15px;color:#9DB2CC;font-style:italic;letter-spacing:.02em}
 
-.mvc-block{max-width:900px;margin:-32px auto 0;padding:0 28px;position:relative;z-index:2}
-.mvc-vision{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:26px 32px;box-shadow:var(--shadow);text-align:center}
+.mvc-block{max-width:1200px;margin:-32px auto 0;padding:0 28px;position:relative;z-index:2}
+.mvc-vision{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:26px 32px;box-shadow:var(--shadow);text-align:left}
 .mvc-label{display:inline-block;font-size:12px;font-weight:700;color:var(--navy);letter-spacing:.1em;margin-bottom:10px}
 .mvc-vision p{font-size:19px;font-weight:600;line-height:1.55;color:var(--ink)}
 .mvc-vision strong{color:var(--navy)}
 
-.mvc-values{max-width:1100px;margin:52px auto 0;padding:0 28px}
-.sec-title{font-size:20px;font-weight:800;margin-bottom:20px;text-align:center}
+.mvc-values{max-width:1200px;margin:52px auto 0;padding:0 28px}
+.sec-title{font-size:20px;font-weight:800;margin-bottom:20px;text-align:left}
 .sec-title small{font-weight:500;color:var(--mid);font-size:13px;margin-left:8px}
 .cv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .cv-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;transition:transform .15s,box-shadow .15s}
@@ -46,7 +46,7 @@ button{font-family:inherit;cursor:pointer}
 .cv-en{font-size:11px;color:var(--mid);margin-bottom:10px}
 .cv-desc{font-size:12px;color:var(--ink2);line-height:1.55}
 
-.mvc-groups{max-width:1100px;margin:56px auto 72px;padding:0 28px}
+.mvc-groups{max-width:1200px;margin:56px auto 72px;padding:0 28px}
 .group-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .gf-card{border-radius:var(--radius);padding:20px;color:#fff;position:relative;overflow:hidden}
 .gf-card .gf-role{font-size:12px;font-weight:700;opacity:.85}
