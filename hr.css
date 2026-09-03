@@ -54,7 +54,7 @@ button{font-family:inherit;cursor:pointer}
 .gf-card .gf-mission{font-size:12.5px;line-height:1.55;opacity:.95}
 .gf-card .gf-teams{margin-top:12px;font-size:11px;opacity:.8;border-top:1px solid rgba(255,255,255,.2);padding-top:10px}
 .gf-invent{background:#1A1A1A}.gf-supply{background:#404040}.gf-expand{background:#606060}
-.gf-prove{background:#808080}.gf-base{background:#A8A8A8;grid-column:span 3}
+.gf-prove{background:#A0522D}.gf-base{background:#A8A8A8;grid-column:span 3}
 
 /* ===== 평가·보상 임베드 ===== */
 .embed-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:var(--bg);border-bottom:1px solid var(--line)}
@@ -110,4 +110,54 @@ button{font-family:inherit;cursor:pointer}
   .kpi-row{grid-template-columns:repeat(3,1fr)}
   .rec-grid{grid-template-columns:1fr}
   .hero-mission{font-size:24px}
+}
+
+/* ===== 조직도 ===== */
+.mvc-orgchart{max-width:1200px;margin:56px auto 0;padding:0 28px}
+.orgchart{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.org-group{background:var(--bg);border:1px solid var(--line);border-top:3px solid;border-radius:var(--radius);padding:16px}
+.org-gname{font-size:15px;font-weight:800;margin-bottom:2px}
+.org-glead{font-size:11px;color:var(--mid);margin-bottom:12px}
+.org-teams{display:flex;flex-direction:column;gap:10px}
+.org-tname{color:#fff;font-size:13px;font-weight:700;padding:8px 12px;border-radius:7px;cursor:pointer;transition:opacity .15s}
+.org-tname:hover{opacity:.85}
+.org-tname.org-sel{box-shadow:0 0 0 3px rgba(0,0,0,.12)}
+.org-parts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding-left:6px}
+.org-part{font-size:11.5px;font-weight:600;padding:5px 10px;border:1.5px solid;border-radius:14px;cursor:pointer;background:var(--bg);transition:all .15s}
+.org-part:hover{background:var(--panel2)}
+.org-part.org-sel{color:#fff !important}
+.org-members{display:none;max-width:1200px;margin:20px auto 0;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.om-head{display:flex;align-items:baseline;justify-content:space-between;border-left:4px solid;padding-left:12px;margin-bottom:16px}
+.om-head strong{font-size:15px}.om-head span{font-size:12px;color:var(--mid)}
+.om-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.om-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.om-name{font-size:14px;font-weight:700}
+.om-title{font-size:11px;font-weight:600;margin:3px 0}
+.om-job{font-size:11px;color:var(--mid);line-height:1.4}
+
+/* org-sel 벽돌색 등 배경 적용 위해 JS에서 style로 처리 */
+.org-part.org-sel{background:currentColor}
+.org-part.org-sel{position:relative}
+
+/* ===== 직무 상세 ===== */
+.job-detail-bar{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
+.job-detail-bar label{font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.job-detail-bar select{flex:1;max-width:420px;padding:9px 12px;border:1px solid var(--line2);border-radius:8px;font-size:13px}
+.job-detail-panel{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:16px;border-left:4px solid var(--navy)}
+.jd-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.jd-head h3{font-size:19px;font-weight:800}
+.jd-org{font-size:13px;color:var(--mid)}
+.jd-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.jd-kpi{background:var(--panel);border-radius:8px;padding:12px;text-align:center}
+.jd-kpi .v{font-size:17px;font-weight:800}
+.jd-kpi .l{font-size:11px;color:var(--mid);margin-top:3px}
+.jd-funnel h4{font-size:13px;font-weight:700;margin-bottom:12px}
+.jd-funnel-bars{display:flex;gap:12px;align-items:flex-end}
+.jd-fseg{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.jd-fbar{width:100%;max-width:60px;border-radius:4px 4px 0 0;min-height:8px}
+.jd-fval{font-size:14px;font-weight:800}
+.jd-flabel{font-size:11px;color:var(--mid)}
+
+@media(max-width:900px){
+  .jd-kpis{grid-template-columns:repeat(3,1fr)}
 }

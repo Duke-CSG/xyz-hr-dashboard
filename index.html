@@ -43,6 +43,12 @@
     <div class="cv-grid" id="cvGrid"></div>
   </section>
 
+  <section class="mvc-orgchart">
+    <h2 class="sec-title">조직도 <small>팀·파트를 클릭하면 구성원이 표시됩니다</small></h2>
+    <div class="orgchart" id="orgChart"></div>
+    <div class="org-members" id="orgMembers"></div>
+  </section>
+
   <section class="mvc-groups">
     <h2 class="sec-title">조직별 미션 <small>발명 → 보급 → 확장 · 실증 · 토대</small></h2>
     <div class="group-flow" id="groupFlow"></div>
@@ -65,6 +71,11 @@
       <h2>채용 현황 대시보드</h2>
       <span class="rec-date" id="recDate"></span>
     </div>
+    <div class="job-detail-bar">
+      <label>직무 상세 보기</label>
+      <select id="jobDetailSel"><option value="">직무를 선택하면 현황이 펼쳐집니다</option></select>
+    </div>
+    <div class="job-detail-panel" id="jobDetailPanel" style="display:none"></div>
 
     <!-- KPI 카드 -->
     <div class="kpi-row" id="kpiRow"></div>
@@ -108,7 +119,7 @@
   </div>
 </main>
 
-<script src="recruit_data.js"></script>
+<script src="data.js"></script>
 <script src="hr.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ XYZ 인사 통합 포털. GitHub Pages 정적 호스팅.
 - `index.html` — 메인 (3개 탭)
 - `hr.css` — 스타일
 - `hr.js` — MVC 렌더링 + 채용 대시보드 로직
-- `recruit_data.js` — 채용 데이터 (엑셀에서 추출, 이 파일만 교체하면 갱신)
+- `data.js` — 채용 데이터 + 조직도 데이터 (이 파일만 교체하면 갱신)
 
 ## 3개 탭
 1. **홈 · MVC** — 전사 Mission·Vision·Core Value 5개 + 조직별 미션
@@ -18,7 +18,7 @@ XYZ 인사 통합 포털. GitHub Pages 정적 호스팅.
 
 1. GitHub에서 새 저장소 `xyz-hr` 생성 (Public)
 2. `hr-portal/` 폴더 안의 파일 4개를 저장소 루트에 업로드
-   (index.html, hr.css, hr.js, recruit_data.js)
+   (index.html, hr.css, hr.js, data.js)
 3. Settings → Pages → Branch: main / root → Save
 4. `https://duke-csg.github.io/xyz-hr/` 로 접속
 
@@ -28,7 +28,7 @@ XYZ 인사 통합 포털. GitHub Pages 정적 호스팅.
 - xyz-eval 주소가 바뀌면 index.html의 iframe src와 링크를 수정하세요.
 
 ## 채용 데이터 갱신
-`recruit_data.js`의 `RECRUIT` 객체를 최신 엑셀에서 추출한 값으로 교체.
+`data.js`의 `RECRUIT` 객체를 최신 엑셀에서 추출한 값으로 교체.
 구조: reqs(채용요청), funnel(전형), quad(사분면), trend(지원자추이)
 
 ## 주의 (인사 데이터)
