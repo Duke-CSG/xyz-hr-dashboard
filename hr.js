@@ -91,9 +91,21 @@ function showOrgMembers(path){
   box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// ===== 인력 현황 =====
+// ===== 인력 현황 (법인 구분) =====
+let currentCorp='xyz';
 function renderWorkforce(){
-  const H=HRSTAT;
+  // 법인 탭 이벤트
+  $$('.corp-tab').forEach(b=>b.onclick=()=>{
+    $$('.corp-tab').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    currentCorp=b.dataset.corp; renderCorpStat();
+  });
+  renderCorpStat();
+  renderOrgTreemap();
+}
+function renderCorpStat(){
+  const H=HRSTAT[currentCorp];
+  const corpName=currentCorp==='xyz'?'주식회사 엑스와이지':'주식회사 라운지엑스';
+  $('#corpNote').innerHTML=`<span class="corp-badge ${currentCorp}">${corpName}</span> 기준 · 별도 법인`;
   // KPI
   const kpis=[
     ['총원',H.total,'명'],
@@ -105,9 +117,9 @@ function renderWorkforce(){
   ];
   $('#workforceKpi').innerHTML=kpis.map(([l,v,u])=>`
     <div class="kpi-card"><div class="kpi-val">${v}<small>${u}</small></div><div class="kpi-label">${l}</div></div>`).join('');
-  // 분포 차트 (성별/연령/고용형태 도넛+막대)
+  // 도넛
   const donut=(title,data,colors)=>{
-    const total=Object.values(data).reduce((a,b)=>a+b,0);
+    const total=Object.values(data).reduce((a,b)=>a+b,0)||1;
     let acc=0; const segs=Object.entries(data).map(([k,v],i)=>{
       const pct=v/total*100; const s=acc; acc+=pct;
       return {k,v,pct,start:s,color:colors[i%colors.length]};
@@ -126,7 +138,6 @@ function renderWorkforce(){
     donut('연령대',H.ageband,['#1E3A5F','#2E5C8A','#6B8CAE','#B0C4D8'])+
     donut('고용형태',H.emptype,['#1E6B4F','#B4690E','#9CA3AF'])+
     donut('R&D 구분',H.rnd,['#1E6B4F','#6B7280']);
-  renderOrgTreemap();
 }
 
 // 조직별 인원 면적 그래프 (treemap 스타일)
@@ -329,37 +340,12 @@ function showJobDetail(no){
 // ===== 데이터 로딩 (구글 시트 우선, 없으면 내장 data.js) =====
 async function loadAllData(){
   if(typeof USE_GOOGLE_SHEETS!=='undefined' && USE_GOOGLE_SHEETS){
-    // 인력 명단 시트 → HRSTAT 재계산
-    const peopleRows=await fetchSheet(SHEET_URLS.people);
-    if(peopleRows && peopleRows.length>1){
-      try{ window.HRSTAT=computeHrStatFromRows(peopleRows); console.log('구글시트 인력 데이터 로드 성공'); }
-      catch(e){ console.warn('시트 파싱 실패, 내장 데이터 사용',e); }
-    }
-    // 채용 시트 등 추가 로드 가능 (동일 패턴)
+    // 시트 연동 시: 법인별 시트를 읽어 HRSTAT.xyz / HRSTAT.lx 재계산
+    // (가이드 참고 — 현재는 내장 데이터 사용)
+    console.log('구글시트 연동 모드 (설정 필요)');
   }
-  // 렌더링
   renderOrgChart();
   renderWorkforce();
   initRecruit();
 }
-
-// 시트 행 → 인력 통계 (헤더: 이름,성별,나이,고용형태,그룹,isRnD ... 유연 매핑)
-function computeHrStatFromRows(rows){
-  const hdr=rows[0].map(h=>h.trim());
-  const idx=name=>hdr.findIndex(h=>h.includes(name));
-  const iGender=idx('성별'),iAge=idx('나이'),iEmp=idx('고용'),iGroup=idx('그룹'),iRnd=idx('R&D');
-  const data=rows.slice(1).filter(r=>r.some(c=>c&&c.trim()));
-  const cnt=(fn)=>{ const o={}; data.forEach(r=>{const k=fn(r); if(k)o[k]=(o[k]||0)+1;}); return o; };
-  const ageband=a=>{ a=parseInt(a); if(!a)return '미상'; if(a<30)return '20대'; if(a<40)return '30대'; if(a<50)return '40대'; return '50대+'; };
-  return {
-    total:data.length,
-    gender:cnt(r=>iGender>=0?r[iGender]:''),
-    ageband:cnt(r=>iAge>=0?ageband(r[iAge]):''),
-    emptype:cnt(r=>iEmp>=0?r[iEmp]:'정규직'),
-    rnd:cnt(r=>iRnd>=0?(r[iRnd]==='Y'||r[iRnd]==='R&D'?'R&D':'비R&D'):'비R&D'),
-    groupcount:cnt(r=>iGroup>=0?r[iGroup]:''),
-    recruiting:(window.HRSTAT&&window.HRSTAT.recruiting)||[]
-  };
-}
-
 loadAllData();

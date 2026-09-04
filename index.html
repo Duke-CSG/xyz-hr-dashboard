@@ -15,8 +15,8 @@
   </div>
   <nav class="mainnav">
     <button class="navtab active" data-tab="home">홈 · MVC</button>
-    <button class="navtab" data-tab="eval">평가 · 보상</button>
     <button class="navtab" data-tab="recruit">인력 현황</button>
+    <button class="navtab" data-tab="eval">평가 · 보상</button>
   </nav>
   <div class="brand-sub">인사총무팀</div>
 </header>
@@ -26,6 +26,7 @@
   <section class="hero">
     <div class="hero-inner">
       <p class="hero-eyebrow">XYZ · Mission · Vision · Core Value</p>
+      <span class="hero-mlabel">MISSION</span>
       <h1 class="hero-mission">일상의 공간에 지능형 로봇을 보급하여,<br>사람이 반복 노동에서 벗어나 더 가치 있는 일에 집중하게 한다</h1>
       <p class="hero-en">We Invent Intelligent Robots For Daily Life</p>
     </div>
@@ -68,7 +69,12 @@
 <main id="tab-recruit" class="tab-panel">
   <div class="recruit-wrap">
     <!-- 인력 현황 -->
-    <div class="rec-head"><h2>인력 현황</h2><span class="rec-date">2026-09-03 기준 · 재직 70명</span></div>
+    <div class="rec-head"><h2>인력 현황</h2><span class="rec-date">2026-09-03 기준 · 재직 70명 (XYZ 61 · 라운지엑스 9)</span></div>
+    <div class="corp-tabs">
+      <button class="corp-tab active" data-corp="xyz">주식회사 엑스와이지 <span>61명</span></button>
+      <button class="corp-tab" data-corp="lx">주식회사 라운지엑스 <span>9명</span></button>
+    </div>
+    <div class="corp-note" id="corpNote"></div>
     <div class="workforce-kpi" id="workforceKpi"></div>
     <div class="workforce-charts" id="workforceCharts"></div>
 
