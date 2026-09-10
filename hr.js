@@ -10,14 +10,16 @@ $$('.navtab').forEach(b=>b.onclick=()=>{
 
 // ===== MVC 홈 =====
 const CORE_VALUES=[
-  ['01','DIG DEEPER','고객이 진짜 필요로 하는 것을, 뿌리까지 팝니다','고객의 진짜 문제를 표면이 아니라 근본 원인까지 파고든다'],
-  ['02','MAKE IT WORK','현실에서 작동하지 않으면, 0점입니다','실험실이 아니라 현장에서 실제로 작동시켜 끝까지 완성한다'],
-  ['03','FINISH TOGETHER','혼자 시작하더라도, 끝은 함께 냅니다','내 일은 끝까지 붙들되, 혼자 못 하는 일은 함께 끝내는 오너십과 공동체 의식'],
-  ['04','ARM UP','누구보다 먼저 새 도구를 익혀 무기로 갖춥니다','새 기술·도구(AI 등)를 먼저 익혀 실제 업무의 무기로 쓴다']
+  ['01','DIG DEEPER','Dig into what customers truly need, down to the root','고객이 진짜 필요로 하는 것을, 뿌리까지 팝니다','고객의 진짜 문제를 표면이 아니라 근본 원인까지 파고든다'],
+  ['02','MAKE IT WORK','If it doesn\'t work in the real world, it\'s zero','현실에서 작동하지 않으면, 0점입니다','실험실이 아니라 현장에서 실제로 작동시켜 끝까지 완성한다'],
+  ['03','FINISH TOGETHER','Start alone if you must, finish it together','혼자 시작하더라도, 끝은 함께 냅니다','내 일은 끝까지 붙들되, 혼자 못 하는 일은 함께 끝내는 오너십과 공동체 의식'],
+  ['04','ARM UP','Master new tools before anyone else','누구보다 먼저 새 도구를 익혀 무기로 갖춥니다','새 기술·도구(AI 등)를 먼저 익혀 실제 업무의 무기로 쓴다']
 ];
-$('#cvGrid').innerHTML=CORE_VALUES.map(([n,name,en,desc])=>`
+$('#cvGrid').innerHTML=CORE_VALUES.map(([n,name,en,kr,desc])=>`
   <div class="cv-card"><div class="cv-num">${n}</div>
-  <div class="cv-name">${name}</div><div class="cv-en">${en}</div>
+  <div class="cv-name">${name}</div>
+  <div class="cv-en">${en}</div>
+  <div class="cv-kr">${kr}</div>
   <div class="cv-desc">${desc}</div></div>`).join('');
 
 const GROUPS=[

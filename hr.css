@@ -225,3 +225,30 @@ button{font-family:inherit;cursor:pointer}
 .corp-badge{font-weight:700;padding:2px 10px;border-radius:12px;font-size:12px}
 .corp-badge.xyz{background:var(--navy-lt);color:var(--navy)}
 .corp-badge.lx{background:#F3E9E0;color:#A0522D}
+
+/* ===== 홈 연결 문구 ===== */
+.intro-block{max-width:1200px;margin:44px auto 0;padding:0 28px}
+.intro-inner{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px 32px;box-shadow:var(--shadow)}
+.intro-title{font-size:19px;font-weight:800;line-height:1.5;margin-bottom:12px;color:var(--ink)}
+.intro-desc{font-size:14px;line-height:1.75;color:var(--ink2)}
+
+.narrative-block{max-width:1200px;margin:48px auto 0;padding:0 28px}
+.narrative-inner{border-left:4px solid var(--navy);padding-left:22px}
+.nb-label{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;
+  color:var(--navy);background:var(--navy-lt);padding:4px 12px;border-radius:16px;margin-bottom:12px}
+.nb-head{font-size:22px;font-weight:800;margin-bottom:12px;color:var(--ink);line-height:1.3}
+.nb-text{font-size:14.5px;line-height:1.8;color:var(--ink2);margin-bottom:12px}
+.nb-text:last-child{margin-bottom:0}
+.nb-text strong{color:var(--navy);font-weight:700}
+
+/* 연결문구 다음 섹션은 여백 축소 (자연스러운 흐름) */
+.narrative-block + .mvc-values,
+.narrative-block + .mvc-orgchart,
+.narrative-block + .mvc-groups{margin-top:24px}
+.narrative-block + .mvc-block{margin-top:20px}
+
+/* Core Value 카드 - 영문 태그라인 + 한글정의 */
+.cv-en{font-size:11px;color:var(--mid);font-style:italic;line-height:1.4;margin-bottom:8px;min-height:30px}
+.cv-kr{font-size:13px;font-weight:700;color:var(--ink);line-height:1.45;margin-bottom:8px}
+.cv-desc{font-size:12px;color:var(--ink2);line-height:1.5}
